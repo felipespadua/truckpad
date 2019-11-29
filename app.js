@@ -34,6 +34,7 @@ app.use(cookieParser());
 
 const driver = require('./routes/driver');
 app.use('/api', driver);
-
+const driver = require('./routes/driver');
+app.use('/api', driver);
 
 module.exports = app;
