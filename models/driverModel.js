@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const truckSchema = new Schema({
+const driverSchema = new Schema({
   name: { type: String, required: true },
   age: { type: Number, required: true },
   gender: { type: Number, required: true },
@@ -19,6 +19,6 @@ const truckSchema = new Schema({
   timestamps: true
 });
 
-const Truck = mongoose.model('Truck', truckSchema);
+const Driver = mongoose.model('Driver', driverSchema);
 
-module.exports = Truck;
+module.exports = Driver;
