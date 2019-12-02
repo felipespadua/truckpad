@@ -3,15 +3,13 @@ require('dotenv').config();
 const bodyParser   = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express      = require('express');
-const favicon      = require('serve-favicon');
-const hbs          = require('hbs');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
 
 
 mongoose
-  .connect('mongodb://localhost/truckpad', {useNewUrlParser: true})
+  .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
   .then(x => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
@@ -31,8 +29,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
-
-const driver = require('./routes/driver');
-app.use('/api', driver);
+app.use('/api', require('./routes/api/index'));
+app.use('/api/drivers', require('./routes/api/drivers'));
+app.use('/api/vehicles', require('./routes/api/vehicles'));
+app.use('/api/journeys', require('./routes/api/journeys'));
 
 module.exports = app;

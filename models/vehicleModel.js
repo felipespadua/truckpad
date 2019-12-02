@@ -3,8 +3,13 @@ const Schema = mongoose.Schema;
 
 
 const vehicleSchema = new Schema({
-  type: { type: String, required: true },
-  code: { type: Number, required: true },
+  plate: { type: String, required: true},
+  loaded: { type: Boolean, required: true},
+  vehicleType: { 
+    type: Schema.Types.ObjectId,
+    ref: 'VehicleType',
+    required: true
+  }
 }, {
   timestamps: true
 });
