@@ -243,19 +243,19 @@ let journeys = [
     status: [
       { 
         cod: "GOING_TO_DESTINATION",
-        date: "2019-12-22"
+        date: "2019-11-22"
       },
       { 
         cod: "ARRIVED_ON_DESTINATION",
-        date: "2019-12-22"
+        date: "2019-11-22"
       },
       { 
         cod: "RETURNING_TO_ORIGIN",
-        date: "2019-12-22"
+        date: "2019-11-22"
       },
       { 
         cod: "JOURNEY_CONCLUDED",
-        date: "2019-12-22"
+        date: "2019-11-22"
       }
     ]
   },
