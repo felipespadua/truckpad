@@ -36,10 +36,23 @@ router.post('/', (req, res, next) => {
 // /api/drivers/unloaded?status="RETURNING_TO_ORIGIN" ---- VERRRRR!!!! Nao finalizado!!
 router.get('/unloaded', (req, res, next) => {
   const { status } = req.query
-  Driver.find()
+  Driver.find({status})
   .populate('vehicle')
   .then(driversFromDb => {
-    let unloadedDrivers = driversFromDb.filter(driver => (driver.loaded() === true))
+    let unloadedDrivers = driversFromDb.filter(driver => driver.loaded() === false)
+    res.status(200).json({drivers: unloadedDrivers})
+  })
+  .catch(err => {
+    res.status(400).json(err);
+  })
+})
+
+router.get('/loaded', (req, res, next) => {
+  const { status } = req.query
+  Driver.find({status})
+  .populate('vehicle')
+  .then(driversFromDb => {
+    let unloadedDrivers = driversFromDb.filter(driver => driver.loaded() === true)
     res.status(200).json({drivers: unloadedDrivers})
   })
   .catch(err => {
@@ -90,7 +103,7 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
-router.get('/hasvehicle/count',(req, res, next) => {
+router.get('/vehicles/owned/count',(req, res, next) => {
   Driver.count({hasVehicle : true })
     .then(count => {
       res.status(200).json({count});

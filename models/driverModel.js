@@ -17,7 +17,7 @@ const driverSchema = new Schema({
   timestamps: true
 });
 
-driverSchema.methods.loaded = function(status) {
+driverSchema.methods.loaded = function() {
   let driver = this
   console.log(driver)
   Journey.findOne({ driver: driver.id})

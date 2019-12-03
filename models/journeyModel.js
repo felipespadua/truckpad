@@ -35,10 +35,13 @@ const journeySchema = new Schema({
     ref: 'Driver',
     required: true
   },
-  status: {
-    type: String,
-    enum: ["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"]
-  }
+  status: [
+      { 
+        cod: { type: String, enum: ["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"]},
+        date: Date
+      }
+     ]
+    
 }, {
   timestamps: true
 });

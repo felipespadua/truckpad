@@ -112,7 +112,24 @@ let journeys = [
         coordinates: [-46.5523411, -21.5346071],
       },
     },
-    status: "GOING_TO_DESTINATION"
+    status: [
+      { 
+        cod: "GOING_TO_DESTINATION",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "ARRIVED_ON_DESTINATION",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "RETURNING_TO_ORIGIN",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "JOURNEY_CONCLUDED",
+        date: "2019-12-04"
+      }
+    ]
   },
   {
     origin: {
@@ -127,7 +144,24 @@ let journeys = [
         coordinates: [-46.5523411, -21.5346071],
       },
     },
-    status: "RETURNING_TO_ORIGIN"
+    status: [
+      { 
+        cod: "GOING_TO_DESTINATION",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "ARRIVED_ON_DESTINATION",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "RETURNING_TO_ORIGIN",
+        date: "2019-12-04"
+      },
+      { 
+        cod: "JOURNEY_CONCLUDED",
+        date: "2019-12-04"
+      }
+    ]
   },
   {
     origin: {
@@ -142,7 +176,24 @@ let journeys = [
         coordinates: [-46.5534166, -23.5346071],
       },
     },
-    status: "ARRIVED_ON_DESTINATION"
+    status: [
+      { 
+        cod: "GOING_TO_DESTINATION",
+        date: "2019-12-05"
+      },
+      { 
+        cod: "ARRIVED_ON_DESTINATION",
+        date: "2019-12-05"
+      },
+      { 
+        cod: "RETURNING_TO_ORIGIN",
+        date: "2019-12-05"
+      },
+      { 
+        cod: "JOURNEY_CONCLUDED",
+        date: "2019-12-05"
+      }
+    ]
   },
   {
     origin: {
@@ -157,7 +208,24 @@ let journeys = [
         coordinates: [-46.5534166, -23.5346071],
       },
     },
-    status: "JOURNEY_CONCLUDED"
+    status: [
+      { 
+        cod: "GOING_TO_DESTINATION",
+        date: "2019-12-15"
+      },
+      { 
+        cod: "ARRIVED_ON_DESTINATION",
+        date: "2019-12-15"
+      },
+      { 
+        cod: "RETURNING_TO_ORIGIN",
+        date: "2019-12-15"
+      },
+      { 
+        cod: "JOURNEY_CONCLUDED",
+        date: "2019-12-15"
+      }
+    ]
   },
   {
     origin: {
@@ -172,7 +240,24 @@ let journeys = [
         coordinates: [-41.5534166, -23.5346071],
       },
     },
-    status: "RETURNING_TO_ORIGIN"
+    status: [
+      { 
+        cod: "GOING_TO_DESTINATION",
+        date: "2019-12-22"
+      },
+      { 
+        cod: "ARRIVED_ON_DESTINATION",
+        date: "2019-12-22"
+      },
+      { 
+        cod: "RETURNING_TO_ORIGIN",
+        date: "2019-12-22"
+      },
+      { 
+        cod: "JOURNEY_CONCLUDED",
+        date: "2019-12-22"
+      }
+    ]
   },
 ]
 const create = (array, model) => {
