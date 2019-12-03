@@ -1,6 +1,7 @@
 'use strict';
 let Driver = require('../models/driverModel');
 let Journey = require('../models/journeyModel');
+const { body, validationResult, query } = require('express-validator/check');
 
 exports.get_drivers = function(req, res) {
     Driver.find()
@@ -14,10 +15,10 @@ exports.get_drivers = function(req, res) {
 
 exports.get_a_driver = function(req, res) {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        res.status(400).json({
-            message: 'Specified id is not valid'
-        });
-    return;
+      res.status(400).json({
+          message: 'Specified id is not valid'
+      });
+      return;
     }
     Driver.findById(req.params.id).populate('vehicleType')
     .then(response => {
@@ -29,15 +30,25 @@ exports.get_a_driver = function(req, res) {
 };
 
 exports.create_driver = function(req, res) {
-    const { name, age, gender, hasVehicle, licenseType, loaded, vehicleType } = req.body
+    const { name, age, gender, hasVehicle, licenseType, vehicle } = req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(422).json({ errors: errors.array() });
+      return;
+    }
+    if (vehicle != null && !mongoose.Types.ObjectId.isValid(vehicle)) {
+      res.status(400).json({
+        message: 'Specified id is not valid'
+      });
+      return;
+    }
     Driver.create({
       name,
       age,
       gender,
       hasVehicle,
       licenseType,
-      loaded,
-      vehicleType
+      vehicle
     })
     .then(response => {
       res.status(200).json(response);
@@ -49,8 +60,19 @@ exports.create_driver = function(req, res) {
 
 exports.update_driver = function(req, res) {
     const { id } = req.params
-    const { name, age, gender, hasVehicle, licenseType, loaded, vehicleType } = req.body
+    const { name, age, gender, hasVehicle, licenseType, vehicle } = req.body
+    const errors = validationResult(req); 
+    if (!errors.isEmpty()) {
+      res.status(422).json({ errors: errors.array() });
+      return;
+    }
     if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400).json({
+          message: 'Specified id is not valid'
+        });
+        return;
+      }
+    if (vehicle != null && !mongoose.Types.ObjectId.isValid(vehicle)) {
         res.status(400).json({
           message: 'Specified id is not valid'
         });
@@ -64,8 +86,7 @@ exports.update_driver = function(req, res) {
         gender: gender != null ? gender : driver.gender,
         hasVehicle: hasVehicle != null ? hasVehicle : driver.hasVehicle,
         licenseType: licenseType != null ? licenseType : driver.licenseType,
-        loaded: loaded != null ? loaded : driver.loaded,
-        vehicleType: vehicleType != null ? vehicleType : driver.vehicleType,
+        vehicle
       })
       updatedDriver.save()
         .then(response => {
@@ -81,29 +102,45 @@ exports.update_driver = function(req, res) {
 };
 
 exports.get_unloaded_drivers = function(req, res) {
-    const { status } = req.query
-    Driver.find({status})
-    .populate('vehicle')
-    .then(driversFromDb => {
-      let unloadedDrivers = driversFromDb.filter(driver => driver.loaded() === false)
-      res.status(200).json({drivers: unloadedDrivers})
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    })
+  const { status } = req.query
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  } 
+  Journey.find({'status.cod': status})
+  .populate({
+    path: 'driver',
+    populate: { path: 'vehicle' },
+  })
+  .then(journeyFromDb => {
+    let filteredJourneys = journeyFromDb.map(journey => {
+      return journey.driver
+    }).filter(driver => driver.vehicle.loaded === false)
+    res.status(200).json(filteredJourneys)
+  })
+  .catch(err => console.log("Error finding journey",err))
 };
 
 exports.get_loaded_drivers = function(req, res) {
-    const { status } = req.query
-    Driver.find({status})
-    .populate('vehicle')
-    .then(driversFromDb => {
-      let unloadedDrivers = driversFromDb.filter(driver => driver.loaded() === true)
-      res.status(200).json({drivers: unloadedDrivers})
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    })
+  const { status } = req.query
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+  Journey.find({'status.cod': status})
+  .populate({
+    path: 'driver',
+    populate: { path: 'vehicle' },
+  })
+  .then(journeyFromDb => {
+    let filteredJourneys = journeyFromDb.map(journey => {
+      return journey.driver
+    }).filter(driver => driver.vehicle.loaded === true)
+    res.status(200).json(filteredJourneys)
+  })
+  .catch(err => console.log("Error finding journey",err))
 };
 
 exports.get_drivers_own_vehicle_count = function(req, res) {
@@ -133,3 +170,48 @@ exports.get_drivers_journey = function(req, res) {
         es.status(400).json(err);
     })
 };
+
+exports.validate = (method) => {
+  switch (method) {
+    case 'create_driver': {
+     return [ 
+        body('name', 'name doesnt exists').exists(),
+        body('name', 'name must be string').isString(),
+        body('age', 'age doesnt exists').exists(),
+        body('age', 'age must be number').isNumeric(),
+        body('gender', 'gender doesnt exists').exists(),
+        body('gender', 'gender must be string').isString(),
+        body('hasVehicle', 'hasVehicle doesnt exists').exists(),
+        body('hasVehicle', 'hasVehicle must be boolean').isBoolean(),
+        body('licenseType', 'licenseType doesnt exists').exists(),
+        body('licenseType', 'licenseType must be string').isString()
+       ]   
+    }
+  case 'update_driver': {
+    return [ 
+       body('name', 'name doesnt exists').exists(),
+       body('name', 'name must be string').isString(),
+       body('age', 'age doesnt exists').exists(),
+       body('age', 'age must be number').isNumeric(),
+       body('gender', 'gender doesnt exists').exists(),
+       body('gender', 'gender must be string').isString(),
+       body('hasVehicle', 'hasVehicle doesnt exists').exists(),
+       body('hasVehicle', 'hasVehicle must be boolean').isBoolean(),
+       body('licenseType', 'licenseType doesnt exists').exists(),
+       body('licenseType', 'licenseType must be string').isString()
+      ]   
+    }
+  case 'get_unloaded_drivers': {
+    return [ 
+        query('status', 'status must exist').exists(),
+        query('status', 'status value must be in ["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"]').isIn(["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"])
+      ]   
+    }
+  case 'get_loaded_drivers': {
+    return [ 
+        query('status', 'status must exist').exists(),
+        query('status', 'status value must be in ["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"]').isIn(["GOING_TO_DESTINATION","RETURNING_TO_ORIGIN", "ARRIVED_ON_DESTINATION","JOURNEY_CONCLUDED"])
+      ]   
+    }
+  }
+}

@@ -6,7 +6,7 @@ const express      = require('express');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
-
+const expressValidator = require('express-validator')
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -22,12 +22,25 @@ const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.
 
 const app = express();
 
+
 // Middleware Setup
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(expressValidator({
+  customValidators: {
+    isValidDate: isValidDate
+  }
+}));
 
+function isValidDate(value) {
+  if (!value.match(/^\d{4}-\d{2}-\d{2}$/)) return false;
+
+  const date = new Date(value);
+  if (!date.getTime()) return false;
+  return date.toISOString().slice(0, 10) === value;
+}
 
 app.use('/api', require('./routes/api/index'));
 app.use('/api/drivers', require('./routes/api/drivers'));

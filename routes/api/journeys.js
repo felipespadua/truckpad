@@ -1,8 +1,8 @@
 const express = require('express');
 const router  = express.Router();
-const journeys = require('../../controllers/journeyController');
+const journeyController = require('../../controllers/journeyController');
 
-router.get('/', journeys.get_journeys);
+router.get('/', journeyController.get_journeys);
 
 // router.get('/driver', (req, res, next) => {
 //   const { driverId } = req.query
@@ -21,7 +21,7 @@ router.get('/', journeys.get_journeys);
 //     })
 // })
 
-router.get('/origin-destination', journeys.get_journeys_group_by_origin_destination)
+router.get('/origin-destination', journeyController.get_journeys_group_by_origin_destination)
 
 // ////ver!!!!!!!!
 // router.get('/drivers', (req, res, next) => {

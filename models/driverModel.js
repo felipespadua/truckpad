@@ -17,15 +17,15 @@ const driverSchema = new Schema({
   timestamps: true
 });
 
-driverSchema.methods.loaded = function() {
+driverSchema.methods.loaded = function(status) {
   let driver = this
-  console.log(driver)
-  Journey.findOne({ driver: driver.id})
+  Journey.findOne({ driver: driver.id, 'status.cod': status})
   .populate({
     path: 'driver',
     populate: { path: 'vehicle' }
   })
   .then(journeyFromDb => {
+   
     if(journeyFromDb === null){
       return null
     }else{
