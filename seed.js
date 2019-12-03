@@ -118,7 +118,7 @@ let journeys = [
     origin: {
       location: {
         type: 'Point',
-        coordinates: [-46.5534166, -23.5346071],
+        coordinates: [-45.5534166, -23.5346071],
       },
     },
     destination: {
@@ -133,7 +133,7 @@ let journeys = [
     origin: {
       location: {
         type: 'Point',
-        coordinates: [-46.5523411, -21.5346071],
+        coordinates: [-44.5523411, -21.5346071],
       },
     },
     destination: {
@@ -148,7 +148,7 @@ let journeys = [
     origin: {
       location: {
         type: 'Point',
-        coordinates: [-46.5534166, -23.5346071],
+        coordinates: [-43.5534166, -23.5346071],
       },
     },
     destination: {
@@ -163,13 +163,13 @@ let journeys = [
     origin: {
       location: {
         type: 'Point',
-        coordinates: [-46.5534166, -23.5346071],
+        coordinates: [-42.5534166, -23.5346071],
       },
     },
     destination: {
       location: {
         type: 'Point',
-        coordinates: [-46.5534166, -23.5346071],
+        coordinates: [-41.5534166, -23.5346071],
       },
     },
     status: "RETURNING_TO_ORIGIN"

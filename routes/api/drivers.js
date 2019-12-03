@@ -45,11 +45,36 @@ router.get('/unloaded', (req, res, next) => {
   .catch(err => {
     res.status(400).json(err);
   })
-
 })
 
-router.get('/:id', (req, res, next) => {
+router.put('/:id', (req, res, next) => {
+  const { id } = req.params
+  const { name, age, gender, hasVehicle, licenseType, loaded, vehicleType } = req.body
+  Driver.findById(id)
+  .then(driver => {
+    let updatedDriver = new Driver({
+      name: name != null ? name : driver.name,
+      age: age != null ? age : driver.age,
+      gender: gender != null ? gender : driver.gender,
+      hasVehicle: hasVehicle != null ? hasVehicle : driver.hasVehicle,
+      licenseType: licenseType != null ? licenseType : driver.licenseType,
+      loaded: loaded != null ? loaded : driver.loaded,
+      vehicleType: vehicleType != null ? vehicleType : driver.vehicleType,
+    })
+    updatedDriver.save()
+      .then(response => {
+        res.status(200).json(response)
+      })
+      .catch(err => {
+        res.status(400).json(err);
+      })
+  })
+  .catch(err => {
+    res.status(400).json(err);
+  })
+});
 
+router.get('/:id', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid'
@@ -65,6 +90,15 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
+router.get('/hasvehicle/count',(req, res, next) => {
+  Driver.count({hasVehicle : true })
+    .then(count => {
+      res.status(200).json({count});
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    })
+})
 
 router.get('/journeys/driver/:id', (req, res, next) => {
   const { id } = req.params
