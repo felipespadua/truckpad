@@ -1,6 +1,5 @@
-```
+
 #TruckPad Challenge
-```
 
 Technical challenge for TruckPad selective process
 
@@ -23,6 +22,16 @@ First, clone the project:
 ```shell
 git clone https://github.com/felipespadua/truckpad.git
 cd truckpad
+
+```
+
+#### Create .env in root folder
+
+  It must have the variables
+```
+PORT=3000 
+ENV=development
+MONGODB_URI=mongodb://localhost/truckpad
 ```
 
 #### Running locally 
