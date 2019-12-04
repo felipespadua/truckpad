@@ -1,12 +1,13 @@
 'use strict';
 let Driver = require('../models/driverModel');
 let Journey = require('../models/journeyModel');
+const mongoose = require('mongoose');
 const { body, validationResult, query } = require('express-validator/check');
 
 exports.get_drivers = function(req, res) {
     Driver.find()
     .then(response => {
-      res.status(200).json(response);
+      res.status(200).json({drivers: response});
     })
     .catch(err => {
       res.status(400).json(err);
@@ -114,10 +115,10 @@ exports.get_unloaded_drivers = function(req, res) {
     populate: { path: 'vehicle' },
   })
   .then(journeyFromDb => {
-    let filteredJourneys = journeyFromDb.map(journey => {
+    let filteredDrivers = journeyFromDb.map(journey => {
       return journey.driver
     }).filter(driver => driver.vehicle.loaded === false)
-    res.status(200).json(filteredJourneys)
+    res.status(200).json({ drivers: filteredDrivers })
   })
   .catch(err => console.log("Error finding journey",err))
 };
@@ -135,10 +136,10 @@ exports.get_loaded_drivers = function(req, res) {
     populate: { path: 'vehicle' },
   })
   .then(journeyFromDb => {
-    let filteredJourneys = journeyFromDb.map(journey => {
+    let filteredDrivers = journeyFromDb.map(journey => {
       return journey.driver
     }).filter(driver => driver.vehicle.loaded === true)
-    res.status(200).json(filteredJourneys)
+    res.status(200).json({ drivers: filteredDrivers })
   })
   .catch(err => console.log("Error finding journey",err))
 };
@@ -161,13 +162,13 @@ exports.get_drivers_journey = function(req, res) {
       });
       return;
     }
-    Journey.findOne({ driver: id, status: { $ne: "JOURNEY_CONCLUDED"}})
+    Journey.findOne({ driver: id})
     .populate('driver')
     .then(response => {
         res.status(200).json(response);
     })
     .catch(err => {
-        es.status(400).json(err);
+        res.status(400).json(err);
     })
 };
 
@@ -189,16 +190,11 @@ exports.validate = (method) => {
     }
   case 'update_driver': {
     return [ 
-       body('name', 'name doesnt exists').exists(),
-       body('name', 'name must be string').isString(),
-       body('age', 'age doesnt exists').exists(),
-       body('age', 'age must be number').isNumeric(),
-       body('gender', 'gender doesnt exists').exists(),
-       body('gender', 'gender must be string').isString(),
-       body('hasVehicle', 'hasVehicle doesnt exists').exists(),
-       body('hasVehicle', 'hasVehicle must be boolean').isBoolean(),
-       body('licenseType', 'licenseType doesnt exists').exists(),
-       body('licenseType', 'licenseType must be string').isString()
+       body('name', 'name must be string').optional().isString(),
+       body('age', 'age must be number').optional().isNumeric(),
+       body('gender', 'gender must be string').optional().isString(),
+       body('hasVehicle', 'hasVehicle must be boolean').optional().isBoolean(),
+       body('licenseType', 'licenseType must be string').optional().isString()
       ]   
     }
   case 'get_unloaded_drivers': {

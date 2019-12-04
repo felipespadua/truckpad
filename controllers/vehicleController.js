@@ -1,11 +1,48 @@
 'use strict';
 let Vehicle = require('../models/vehicleModel');
+let VehicleType = require('../models/vehicleTypeModel');
 let Journey = require('../models/journeyModel');
 const moment     = require('moment');
+const mongoose = require('mongoose');
 const { body, validationResult, query , check} = require('express-validator/check');
 
 exports.get_vehicles = function(req, res) {
   Vehicle.find()
+  .then(response => {
+    res.status(200).json({vehicles: response});
+  })
+  .catch(err => {
+    res.status(400).json(err);
+  })
+};
+
+exports.get_vehicles_types = function(req, res) {
+  VehicleType.find()
+  .then(response => {
+    res.status(200).json({vehicleTypes: response});
+  })
+  .catch(err => {
+    res.status(400).json(err);
+  })
+};
+
+exports.create_vehicle = function(req, res) {
+  const { plate, vehicleType } = req.body
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+  if (!mongoose.Types.ObjectId.isValid(vehicleType)) {
+    res.status(400).json({
+      message: 'Specified id is not valid'
+    });
+    return;
+  }
+  Vehicle.create({
+    plate,
+    vehicleType
+  })
   .then(response => {
     res.status(200).json(response);
   })
@@ -90,6 +127,13 @@ exports.get_vehicles_terminal_count_by_month = function(req, res) {
 
 exports.validate = (method) => {
   switch (method) {
+    case 'create_vehicle': {
+      return [ 
+          body('plate', 'plate must exist').exists(),
+          body('plate').isString(),
+          body('vehicleType').exists(),
+        ]   
+      }
     case 'get_vehicles_terminal_count_by_day': {
       return [ 
           query('date', 'date must exist').exists(),
