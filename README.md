@@ -51,7 +51,7 @@ To get the Node server running locally:
 ##  Testing
 
 ```shell
-./truckpad mocha
+./truckpad npm test
 ```
 
 ## Built With
